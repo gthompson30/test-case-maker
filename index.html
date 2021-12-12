@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<style>
+body {
+        background-color: rgb(218, 215, 232);
+        /* #77cce4; */
+}
+
+th, td {
+        padding: 10px;
+        border: 0px solid black;
+        border-collapse: collapse;
+	padding-top:0px;
+}
+
+td {
+	padding-bottom:10px;
+}
+
+#main_box {
+        width: 50%;
+        background-color: lightblue;
+        border: 2px dotted blue;
+}
+
+#me { color: black; text-decoration: none; }
+#me:hover { color: blue; }
+</style>
+
+<script>
+var numRows = 3;
+
+function addOneRow() {
+	numRows++;
+	var cases = [];
+	var outs = [];
+	for (var i = 1; i < numRows; i++) {
+		var currentCase = document.getElementById(i + "_in").value;
+		var currentOut = document.getElementById(i + "_out").value;
+		cases.push(currentCase);
+		outs.push(currentOut);
+	}
+	cases.push(''); outs.push('');
+
+	document.getElementById('entry').innerHTML = `
+		<tr style="height:50px;">
+			<th>Function call</th>
+			<th>Expected output</th>
+		</tr>
+	`;
+	for (var i = 0; i < numRows; i++) {
+		document.getElementById('entry').innerHTML += `
+			<tr id="` + i + `">
+				<td><input type="text" id="` + (i + 1) + `_in" value="` + cases[i] + `" placeholder="Test case"></input></td>
+				<td><input type="text" id="` + (i + 1) + `_out" value="` + outs[i] + `"placeholder="Output"></input></td>
+			</tr>
+		`;
+	}
+}
+
+function addRows() {
+	var newRows = parseInt(document.getElementById('newRowCount').value);
+	for (var i = 0; i < newRows; i++) {
+		addOneRow();
+	}
+}
+
+function deleteLastRow() {
+	document.getElementById(numRows - 1).remove();
+	numRows--;
+}
+
+function generateCode() {
+	var code = testCases();
+	var body = document.getElementById("main_box");
+	body.innerHTML = "";
+
+	body.innerHTML += `
+		<br>
+		<h1> Your test case code: </h1>
+		<br>
+		<div style="text-align: left; margin-left: 10%;">
+			<pre id="the_code"></pre>
+		</div>
+		<br>
+		<p><a href="index.html">Click to go back</a></p>
+		<br>
+	`;
+	var mainCode = document.getElementById("the_code");
+	mainCode.innerHTML += code;
+}
+
+function testCases() {
+	var out = '';
+	var expected;
+	var testCase;
+
+	for (var i = 1; i <= numRows; i++) {
+		testCase = document.getElementById(i + "_in").value;
+		expected = document.getElementById(i + "_out").value;
+
+		if (!testCase || !expected) {
+			continue;
+		}
+		out += 'System.out.println(' + testCase + ' + " ...should be " + ' + expected + ");\n";
+	}
+	return out;
+}
+
+</script>
+
+</head>
+
+<body>
+	<center>
+		<br><br><br>
+		<div id="main_box">
+			<br>
+			<h1> Java Test Case Generator </h1>
+			<p><i> By <a id="me" href="https://www.github.com/gthompson30">Gabriel Thompson</a> '23</i></p>
+			<br>
+			<p><i> Tip: Use tab and shift+tab to swap between each test case entry quickly</i></p>
+			<table id="entry">
+				<tr style="height:50px;">
+					<th>Function call</th>
+					<th>Expected output</th>
+				</tr>
+				<tr id="1">
+					<td><input id="1_in" type="text" placeholder="Test case"></input></td>
+					<td><input id="1_out" id="1" type="text" placeholder="Output"></input></td>
+				</tr>
+                                <tr id="2">
+                                        <td><input id="2_in" type="text" placeholder="Test case"></input></td>
+                                        <td><input id="2_out" type="text" placeholder="Output"></input></td>
+                                </tr>
+                                <tr id="3">
+                                        <td><input id="3_in" type="text" placeholder="Test case"></input></td>
+                                        <td><input id="3_out" type="text" placeholder="Output"></input></td>
+                                </tr>
+			</table>
+			<br>
+			<table style="width: 24.4vw">
+				<tr>
+					<td style="width:100%" colspan="2">
+						<button type="button" style="width:100%" onclick="addOneRow()">Add test case</button>
+					</td>
+				</tr>
+                                <tr>
+                                        <td style="width:100%" colspan="2">
+                                                <button type="button" style="width: 70%" onclick="addRows()">Add # of test cases</button>
+                                                <input type="text" id="newRowCount" style="width:26%"> </input>
+                                        </td>
+                                </tr>
+				<tr>
+					<td style="width:100%" colspan="2">
+						<button type="button" style="width:100%" onclick="deleteLastRow()">Delete last test case</button>
+					</td>
+				</tr>
+			</table>
+			<br>
+			<button type="button" onclick="generateCode()">Generate code</button>
+			<br><br>
+		</div>
+	</center>
+</body>
+
+</html>
